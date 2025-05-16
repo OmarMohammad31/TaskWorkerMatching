@@ -83,6 +83,7 @@ public class ClientDAOImp implements ClientDAO
         }
         return clientDTO;
     }
+    @Override
     public int update(int ID, ClientDTO clientDTO) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateClientQuery);
         preparedStatement.setString(1, clientDTO.getNAME());
@@ -100,6 +101,7 @@ public class ClientDAOImp implements ClientDAO
         }
         return numOfUpdatedRecords;
     }
+    @Override
     public int delete(int ID) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(deleteClientQuery);
         preparedStatement.setInt(1, ID);

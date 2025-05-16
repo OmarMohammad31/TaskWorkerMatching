@@ -22,6 +22,7 @@ public class TaskDAOImp implements TaskDAO
     private static final String selectTaskQuery = "SELECT * FROM TASK WHERE TID = ?";
     private static final String updateTaskQuery = "UPDATE TASK set NAME = ?, SPECIALITY = ?, AVGNEEDEDTIME = ?, FEE = ? WHERE TID = ?";
     private static final String deleteTaskQuery = "DELETE FROM TASK WHERE TID = ?";
+    @Override
     public ArrayList<TaskDTO> getAll() throws SQLException {
         ArrayList<TaskDTO> allTasks = new ArrayList<>();
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getAllTasksQuery);
@@ -38,6 +39,7 @@ public class TaskDAOImp implements TaskDAO
         DataBaseConnector.closePreparedStatement(preparedStatement);
         return allTasks;
     }
+    @Override
     public int insert(TaskDTO taskDTO) throws SQLException{
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(insertTaskQuery);
         preparedStatement.setInt(1,taskDTO.getTID());
@@ -49,6 +51,7 @@ public class TaskDAOImp implements TaskDAO
         DataBaseConnector.closePreparedStatement(preparedStatement);
         return numOfInsertedRecords;
     }
+    @Override
     public TaskDTO search(int ID) throws SQLException{
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(selectTaskQuery);
         preparedStatement.setInt(1,ID);
@@ -69,6 +72,7 @@ public class TaskDAOImp implements TaskDAO
         }
         return taskDTO;
     }
+    @Override
     public int update(int ID,TaskDTO taskDTO) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateTaskQuery);
         preparedStatement.setString(1, taskDTO.getName());
@@ -83,6 +87,7 @@ public class TaskDAOImp implements TaskDAO
         }
         return numOfUpdatedRecords;
     }
+    @Override
     public int delete(int ID) throws SQLException{
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(deleteTaskQuery);
         preparedStatement.setInt(1,ID);
