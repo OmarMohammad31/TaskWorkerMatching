@@ -20,8 +20,11 @@ public class ClientDAOImp implements ClientDAO
     private static final String col_cvv = "CVV";
     private static final String getAllClientsQuery = "SELECT * FROM CLIENT";
     private final String insertClientQuery = "INSERT INTO CLIENT(CID, NAME, PHONE, ADDRESS, EMAIL, CARDNUM, EXPDATE, CVV) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+    private final String selectClientQuery = "SELECT * FROM CLIENT WHERE CID = ?";
+    private final String updateClientQuery = "UPDATE CLIENT set NAME = ?, PHONE = ?, ADDRESS = ?, EMAIL = ?, CARDNUM = ?, EXPDATE = ?, CVV = ? WHERE CID = ?";
+    private final String deleteClientQuery = "DELETE FROM CLIENT WHERE CID = ?";
     @Override
-    public ArrayList<ClientDTO> getAllClients() throws SQLException {
+    public ArrayList<ClientDTO> getAll() throws SQLException {
         ArrayList<ClientDTO> allClients = new ArrayList<>();
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getAllClientsQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -41,7 +44,7 @@ public class ClientDAOImp implements ClientDAO
         return allClients;
     }
     @Override
-    public int insertClient(ClientDTO clientDTO) throws SQLException{
+    public int insert(ClientDTO clientDTO) throws SQLException{
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(insertClientQuery);
         preparedStatement.setInt(1,clientDTO.getCID());
         preparedStatement.setString(2, clientDTO.getNAME());
@@ -56,5 +59,55 @@ public class ClientDAOImp implements ClientDAO
         return numOfInsertedRecords;
     }
 
-
+    @Override
+    public ClientDTO search(int ID) throws SQLException {
+        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(selectClientQuery);
+        preparedStatement.setInt(1,ID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ClientDTO clientDTO = null;
+        if(resultSet.next()){
+            int CID = resultSet.getInt(col_cid);
+            String name = resultSet.getString(col_name);
+            String phone = resultSet.getString(col_phone);
+            String address = resultSet.getString(col_address);
+            String email = resultSet.getString(col_email);
+            String cardNum = resultSet.getString(col_cardNum);
+            LocalDateTime ExpDate = resultSet.getObject(col_expDate, LocalDateTime.class);
+            String CVV = resultSet.getString(col_cvv);
+            clientDTO = new ClientDTO(CID, name, phone, address, email, cardNum, ExpDate, CVV);
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        if (clientDTO == null){
+            throw new SQLException("No client found with ID: " + ID);
+        }
+        return clientDTO;
+    }
+    public int update(int ID, ClientDTO clientDTO) throws SQLException {
+        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateClientQuery);
+        preparedStatement.setString(1, clientDTO.getNAME());
+        preparedStatement.setString(2, clientDTO.getPHONE());
+        preparedStatement.setString(3, clientDTO.getADDRESS());
+        preparedStatement.setString(4, clientDTO.getEMAIL());
+        preparedStatement.setString(5, clientDTO.getCARDNUM());
+        preparedStatement.setObject(6, clientDTO.getEXPDATE());
+        preparedStatement.setString(7, clientDTO.getCVV());
+        preparedStatement.setInt(8, ID);
+        int numOfUpdatedRecords = preparedStatement.executeUpdate();
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        if (numOfUpdatedRecords == 0){
+            throw new SQLException("No client found with ID: " + ID);
+        }
+        return numOfUpdatedRecords;
+    }
+    public int delete(int ID) throws SQLException {
+        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(deleteClientQuery);
+        preparedStatement.setInt(1, ID);
+        int numOfDeletedRecords = preparedStatement.executeUpdate();
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        if (numOfDeletedRecords == 0){
+            throw new SQLException("No client found with ID: " + ID);
+        }
+        return numOfDeletedRecords;
+    }
 }

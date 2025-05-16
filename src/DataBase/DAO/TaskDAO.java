@@ -7,6 +7,9 @@ import java.util.ArrayList;
 
 public interface TaskDAO extends GenericDAO<TaskDTO>
 {
-    ArrayList<TaskDTO> getAllTasks() throws SQLException;
-    int insertTask(TaskDTO taskDTO) throws SQLException;
+    ArrayList<TaskDTO> getAll() throws SQLException;
+    int insert(TaskDTO taskDTO) throws SQLException;
+    TaskDTO search(int ID) throws SQLException;
+    int update(int ID, TaskDTO taskDTO) throws SQLException;
+    int delete(int ID) throws SQLException;
 }

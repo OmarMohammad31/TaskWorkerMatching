@@ -13,7 +13,7 @@ public class Main
     {
         LocalDateTime myTime = LocalDateTime.of(2025, 5, 16, 14, 30);
         ClientDTO clientDTO = new ClientDTO(1, "omar", "01010", "asdf", "@test.com", "123", myTime, "12");
-        ArrayList<ClientDTO> myClients = ClientDAOImp.getInstance().getAllClients();
+        ArrayList<ClientDTO> myClients = ClientDAOImp.getInstance().getAll();
         for (ClientDTO client:myClients){
             System.out.println(client.toString());
         }
