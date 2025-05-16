@@ -1,6 +1,14 @@
 package DataBase.DTO;
 public class TaskDTO
 {
+    public TaskDTO(int TID, String Name, String SPECIALITY,int AVGNEEDEDTIME, int FEE){
+        this.TID = TID;
+        this.Name = Name;
+        this.SPECIALITY = SPECIALITY;
+        this.AVGNEEDEDTIME = AVGNEEDEDTIME;
+        this.FEE = FEE;
+    }
+
     public int getTID()
     {
         return TID;
