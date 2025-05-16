@@ -1,6 +1,26 @@
 package DataBase.DTO;
 public class TaskDTO
 {
+
+    public TaskDTO(int TID, String name, String SPECIALITY, int AVGNEEDEDTIME, int FEE) {
+        this.TID = TID;
+        Name = name;
+        this.SPECIALITY = SPECIALITY;
+        this.AVGNEEDEDTIME = AVGNEEDEDTIME;
+        this.FEE = FEE;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskDTO{" +
+                "TID=" + TID +
+                ", Name='" + Name + '\'' +
+                ", SPECIALITY='" + SPECIALITY + '\'' +
+                ", AVGNEEDEDTIME=" + AVGNEEDEDTIME +
+                ", FEE=" + FEE +
+                '}';
+    }
+
     public int getTID()
     {
         return TID;
