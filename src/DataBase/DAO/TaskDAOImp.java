@@ -36,6 +36,15 @@ public class TaskDAOImp implements TaskDAO {
             " GROUP BY t.TID, t.NAME, t.SPECIALITY, t.AVGNEEDEDTIME, t.FEE" +
             " ORDER BY COUNT(r.RID) ASC;";
 
+    private static final String getSpecialityWithNoRequestsThisMonthQuery =  "SELECT DISTINCT t.SPECIALITY " +
+            "FROM TASK t " +
+            "WHERE NOT EXISTS ( " +
+            "SELECT 1 FROM REQUEST r " +
+            "WHERE r.SPECIALITY = t.NAME " +
+            "AND YEAR(r.PLACEMENT_TIME) = YEAR(GETDATE()) " +
+            "AND MONTH(r.PLACEMENT_TIME) = MONTH(GETDATE()) " +
+            ")";
+
     @Override
     public ArrayList<TaskDTO> getAll() throws SQLException {
         ArrayList<TaskDTO> allTasks = new ArrayList<>();
@@ -162,5 +171,21 @@ public class TaskDAOImp implements TaskDAO {
             throw new SQLException("No Tasks found");
         }
         return taskDTO;
+    }
+
+    public ArrayList<String> getTaskWithNoRequestThisMonth() throws SQLException {
+        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getSpecialityWithNoRequestsThisMonthQuery);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<String> SpecialityWithNoTasksThisMonth = new ArrayList<>();
+        while (resultSet.next()) {
+            String speciality = resultSet.getString(col_speciality);
+            SpecialityWithNoTasksThisMonth.add(speciality);
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        if (SpecialityWithNoTasksThisMonth.isEmpty()) {
+            throw new SQLException("No Tasks found");
+        }
+        return SpecialityWithNoTasksThisMonth;
     }
 }
