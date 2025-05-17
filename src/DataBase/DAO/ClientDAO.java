@@ -7,7 +7,6 @@ public interface ClientDAO extends GenericDAO<ClientDTO>
     ArrayList<ClientDTO> getAll() throws SQLException;
     int insert(ClientDTO clientDTO) throws SQLException;
     ClientDTO search(int ID) throws SQLException;
-    int update(int ID, ClientDTO clientDTO) throws SQLException;
+    int update(ClientDTO clientDTO) throws SQLException;
     int delete(int ID) throws SQLException;
-
 }

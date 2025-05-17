@@ -1,12 +1,12 @@
 package DataBase.DTO;
 public class TaskDTO
 {
- private int TID;
+    private int TID;
     private String Name;
     private String SPECIALITY;
     private int AVGNEEDEDTIME;
     private int FEE;
-    
+
     public TaskDTO(int TID, String name, String SPECIALITY, int AVGNEEDEDTIME, int FEE) {
         this.TID = TID;
         Name = name;
@@ -16,7 +16,7 @@ public class TaskDTO
     }
     @Override
     public String toString() {return "TaskDTO{" + "TID=" + TID + ", Name='" + Name + '\'' + ", SPECIALITY='" + SPECIALITY + '\'' + ", AVGNEEDEDTIME=" + AVGNEEDEDTIME + ", FEE=" + FEE + '}'; }
-    public int getTID() {return TID;
+    public int getTID() {return TID;}
     public void setTID(int TID) {this.TID = TID; }
     public String getName() {return Name;}
     public void setName(String name) {Name = name;}

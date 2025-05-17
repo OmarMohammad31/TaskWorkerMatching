@@ -21,7 +21,7 @@ public class ClientDAOImp implements ClientDAO
     private static final String getAllClientsQuery = "SELECT * FROM CLIENT";
     private final String insertClientQuery = "INSERT INTO CLIENT(CID, NAME, PHONE, ADDRESS, EMAIL, CARDNUM, EXPDATE, CVV) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
     private final String getClientQuery = "SELECT * FROM CLIENT WHERE CID = ?";
-    private final String updateClientQuery = "UPDATE set NAME = ?, PHONE = ?, ADDRESS = ?, EMAIL = ?, CARDNUM = ?, EXPDATE = ?, CVV = ? WHERE CID = ?";
+    private final String updateClientQuery = "UPDATE ClIENT SET NAME = ?, PHONE = ?, ADDRESS = ?, EMAIL = ?, CARDNUM = ?, EXPDATE = ?, CVV = ? WHERE CID = ?";
     private final String deleteClientQuery = "DELETE FROM CLIENT WHERE CID = ?";
     @Override
     public ArrayList<ClientDTO> getAll() throws SQLException {
@@ -29,15 +29,15 @@ public class ClientDAOImp implements ClientDAO
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getAllClientsQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()){
-        int CID = resultSet.getInt(col_cid);
-        String name = resultSet.getString(col_name);
-        String phone = resultSet.getString(col_phone);
-        String address = resultSet.getString(col_address);
-        String email = resultSet.getString(col_email);
-        String cardNum = resultSet.getString(col_cardNum);
-        LocalDateTime ExpDate = resultSet.getObject(col_expDate, LocalDateTime.class);
-        String CVV = resultSet.getString(col_cvv);
-        allClients.add(new ClientDTO(CID, name, phone, address, email, cardNum, ExpDate, CVV));
+            int CID = resultSet.getInt(col_cid);
+            String name = resultSet.getString(col_name);
+            String phone = resultSet.getString(col_phone);
+            String address = resultSet.getString(col_address);
+            String email = resultSet.getString(col_email);
+            String cardNum = resultSet.getString(col_cardNum);
+            LocalDateTime ExpDate = resultSet.getObject(col_expDate, LocalDateTime.class);
+            String CVV = resultSet.getString(col_cvv);
+            allClients.add(new ClientDTO(CID, name, phone, address, email, cardNum, ExpDate, CVV));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);

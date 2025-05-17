@@ -56,10 +56,10 @@ public class WorkerDAOImp implements WorkerDAO
         return numOfAffectedRows;
     }
     @Override
-    public int update(int workerID, WorkerDTO workerDTO) throws SQLException {
+    public int update(WorkerDTO workerDTO) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(changeWorkerNameQuery);
         preparedStatement.setString(1,workerDTO.getNAME());
-        preparedStatement.setInt(2,workerID);
+        preparedStatement.setInt(2,workerDTO.getWID());
         int numOfAffectedRows = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
         return numOfAffectedRows;

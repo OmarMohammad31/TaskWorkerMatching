@@ -17,10 +17,9 @@ public class TaskDAOImp implements TaskDAO {
     private static final String insertTaskQuery = "INSERT INTO TASK(TID, NAME, SPECIALITY, AVGNEEDEDTIME, FEE) VALUES (?, ?, ?, ?, ?)";
     private static final String updateTaskQuery = "UPDATE TASK SET NAME = ?, SPECIALITY = ?, AVGNEEDEDTIME = ?, FEE = ? WHERE TID = ?";
     private static final String deleteTaskQuery = "DELETE FROM TASK WHERE TID = ?";
-    private static final String getMostRequestedTaskQuery = "SELECT TOP 1 t.* FROM TASK t LEFT JOIN REQUEST r ON t.NAME = r.SPECIALITY GROUP BY t.TID, t.NAME, t.SPECIALITY, t.AVGNEEDEDTIME, t.FEE ORDER BY COUNT(r.RID) DESC;";
-    private static final String getLeastRequestedTaskQuery = "SELECT TOP 1 t.* FROM TASK t LEFT JOIN REQUEST r ON t.NAME = r.SPECIALITY GROUP BY t.TID, t.NAME, t.SPECIALITY, t.AVGNEEDEDTIME, t.FEE ORDER BY COUNT(r.RID) ASC;";
-    private static final String getSpecialityWithNoRequestsThisMonthQuery =  "SELECT DISTINCT t.SPECIALITY FROM TASK t WHERE NOT EXISTS (SELECT 1 FROM REQUEST r WHERE r.SPECIALITY = t.NAME AND YEAR(r.PLACEMENT_TIME) = YEAR(GETDATE()) AND MONTH(r.PLACEMENT_TIME) = MONTH(GETDATE()) )";
-    
+    private static final String getMostRequestedTaskQuery = " Select TOP 1 t.TID, t.name, count(*) as request_count From Task t, Request R Where t.TID = r.TID group by t.TID, t.NAME Order by request_count desc";
+    private static final String getLeastRequestedTaskQuery = "Select TOP 1 t.TID, t.name, count(*) as request_count From Task t, Request R Where t.TID = r.TID group by t.TID, t.NAME Order by request_count asc;";
+    private static final String getSpecialityWithNoRequestsThisMonthQuery =  "SELECT s.SPECIALTYID, s.NAME FROM SPECIALTY s WHERE NOT EXISTS (SELECT 1 FROM TASK t JOIN REQUEST r ON t.TID = r.TID WHERE t.SPECIALITY = s.SPECIALTYID AND r.PLACEMENTTIME >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0) AND r.PLACEMENTTIME < DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) + 1, 0));";
     public static TaskDAOImp getInstance() {return instance;}
     @Override
     public ArrayList<TaskDTO> getAll() throws SQLException {
@@ -70,13 +69,13 @@ public class TaskDAOImp implements TaskDAO {
         return numOfInsertedRecords;
     }
     @Override
-    public int update(int TID, TaskDTO taskDTO) throws SQLException {
+    public int update(TaskDTO taskDTO) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateTaskQuery);
         preparedStatement.setString(1, taskDTO.getName());
         preparedStatement.setString(2, taskDTO.getSPECIALITY());
         preparedStatement.setInt(3, taskDTO.getAVGNEEDEDTIME());
         preparedStatement.setInt(4, taskDTO.getFEE());
-        preparedStatement.setInt(5, TID);
+        preparedStatement.setInt(5, taskDTO.getTID());
         int numOfUpdatedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
         return numOfUpdatedRecords;
@@ -121,13 +120,17 @@ public class TaskDAOImp implements TaskDAO {
         DataBaseConnector.closePreparedStatement(preparedStatement);
         return taskDTO;
     }
-    public ArrayList<String> getTaskWithNoRequestThisMonth() throws SQLException {
+    public ArrayList<TaskDTO> getTaskWithNoRequestThisMonth() throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getSpecialityWithNoRequestsThisMonthQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
-        ArrayList<String> SpecialityWithNoTasksThisMonth = new ArrayList<>();
+        ArrayList<TaskDTO> SpecialityWithNoTasksThisMonth = new ArrayList<>();
         while (resultSet.next()) {
-            String speciality = resultSet.getString(col_speciality);
-            SpecialityWithNoTasksThisMonth.add(speciality);
+            int TID = resultSet.getInt(col_tid);
+            String Name = resultSet.getString(col_name);
+            String SPECIALITY = resultSet.getString(col_speciality);
+            int AVGNEEDEDTIME = resultSet.getInt(col_avgneededtime);
+            int FEE = resultSet.getInt(col_fee);
+            SpecialityWithNoTasksThisMonth.add(new TaskDTO(TID, Name, SPECIALITY, AVGNEEDEDTIME, FEE));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
