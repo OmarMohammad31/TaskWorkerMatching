@@ -79,7 +79,6 @@ public class ClientDAOImp implements ClientDAO
         return clientDTO;
     }
     @Override
-    UPDATE set NAME = ?, PHONE = ?, ADDRESS = ?, EMAIL = ?, CARDNUM = ?, EXPDATE = ?, CVV = ? WHERE CID = ?
     public int update(ClientDTO clientDTO) throws SQLException{
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateClientQuery);
         preparedStatement.setString(1,clientDTO.getNAME());
