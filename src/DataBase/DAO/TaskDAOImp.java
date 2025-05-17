@@ -24,6 +24,18 @@ public class TaskDAOImp implements TaskDAO {
     private static final String updateTaskQuery = "UPDATE TASK SET NAME = ?, SPECIALITY = ?, AVGNEEDEDTIME = ?, FEE = ? WHERE TID = ?";
     private static final String deleteTaskQuery = "DELETE FROM TASK WHERE TID = ?";
 
+    private static final String getMostRequestedTaskQuery = "SELECT TOP 1 t.*" +
+            " FROM TASK t" +
+            " LEFT JOIN REQUEST r ON t.NAME = r.SPECIALITY" +
+            " GROUP BY t.TID, t.NAME, t.SPECIALITY, t.AVGNEEDEDTIME, t.FEE" +
+            " ORDER BY COUNT(r.RID) DESC;";
+
+    private static final String getLeastRequestedTaskQuery = "SELECT TOP 1 t.*" +
+            " FROM TASK t" +
+            " LEFT JOIN REQUEST r ON t.NAME = r.SPECIALITY" +
+            " GROUP BY t.TID, t.NAME, t.SPECIALITY, t.AVGNEEDEDTIME, t.FEE" +
+            " ORDER BY COUNT(r.RID) ASC;";
+
     @Override
     public ArrayList<TaskDTO> getAll() throws SQLException {
         ArrayList<TaskDTO> allTasks = new ArrayList<>();
@@ -110,5 +122,45 @@ public class TaskDAOImp implements TaskDAO {
             throw new SQLException("Task does not exist");
         }
         return numOfDeletedRecords;
+    }
+
+    public TaskDTO getMostRequestedTask() throws SQLException {
+        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getMostRequestedTaskQuery);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        TaskDTO taskDTO = null;
+        if (resultSet.next()) {
+            int tid = resultSet.getInt(col_tid);
+            String name = resultSet.getString(col_name);
+            String speciality = resultSet.getString(col_speciality);
+            int avgneededtime = resultSet.getInt(col_avgneededtime);
+            int fee = resultSet.getInt(col_fee);
+            taskDTO = new TaskDTO(tid, name, speciality, avgneededtime, fee);
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        if (resultSet == null) {
+            throw new SQLException("No Tasks found");
+        }
+        return taskDTO;
+    }
+
+    public TaskDTO getLeastRequestedTask() throws SQLException {
+        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getLeastRequestedTaskQuery);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        TaskDTO taskDTO = null;
+        if (resultSet.next()) {
+            int tid = resultSet.getInt(col_tid);
+            String name = resultSet.getString(col_name);
+            String speciality = resultSet.getString(col_speciality);
+            int avgneededtime = resultSet.getInt(col_avgneededtime);
+            int fee = resultSet.getInt(col_fee);
+            taskDTO = new TaskDTO(tid, name, speciality, avgneededtime, fee);
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        if (resultSet == null) {
+            throw new SQLException("No Tasks found");
+        }
+        return taskDTO;
     }
 }
