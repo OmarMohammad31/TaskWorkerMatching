@@ -1,7 +1,12 @@
 package DataBase.DTO;
 public class TaskDTO
 {
-
+ private int TID;
+    private String Name;
+    private String SPECIALITY;
+    private int AVGNEEDEDTIME;
+    private int FEE;
+    
     public TaskDTO(int TID, String name, String SPECIALITY, int AVGNEEDEDTIME, int FEE) {
         this.TID = TID;
         Name = name;
@@ -70,10 +75,4 @@ public class TaskDTO
     {
         this.FEE = FEE;
     }
-
-    private int TID;
-    private String Name;
-    private String SPECIALITY;
-    private int AVGNEEDEDTIME;
-    private int FEE;
 }
