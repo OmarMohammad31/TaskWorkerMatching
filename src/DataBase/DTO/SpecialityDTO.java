@@ -1,6 +1,19 @@
 package DataBase.DTO;
 public class SpecialityDTO
 {
+    public SpecialityDTO(int SPECIALTYID, String NAME) {
+        this.SPECIALTYID = SPECIALTYID;
+        this.NAME = NAME;
+    }
+
+    @Override
+    public String toString() {
+        return "SpecialityDTO{" +
+                "SPECIALTYID=" + SPECIALTYID +
+                ", NAME='" + NAME + '\'' +
+                '}';
+    }
+
     public int getSPECIALTYID()
     {
         return SPECIALTYID;
