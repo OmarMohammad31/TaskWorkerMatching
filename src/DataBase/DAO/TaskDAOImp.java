@@ -57,9 +57,9 @@ public class TaskDAOImp implements TaskDAO {
     }
 
     @Override
-    public TaskDTO search(int id) throws SQLException {
+    public TaskDTO search(int TID) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getTaskQuery);
-        preparedStatement.setInt(1, id);
+        preparedStatement.setInt(1, TID);
         ResultSet resultSet = preparedStatement.executeQuery();
 
         TaskDTO taskDTO = null;
@@ -94,14 +94,14 @@ public class TaskDAOImp implements TaskDAO {
         return numOfInsertedRecords;
     }
     @Override
-    public int update(int ID, TaskDTO taskDTO) throws SQLException {
+    public int update(int TID, TaskDTO taskDTO) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateTaskQuery);
 
         preparedStatement.setString(1, taskDTO.getName());
         preparedStatement.setString(2, taskDTO.getSPECIALITY());
         preparedStatement.setInt(3, taskDTO.getAVGNEEDEDTIME());
         preparedStatement.setInt(4, taskDTO.getFEE());
-        preparedStatement.setInt(5, ID);
+        preparedStatement.setInt(5, TID);
 
         int numOfUpdatedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
@@ -112,9 +112,9 @@ public class TaskDAOImp implements TaskDAO {
         return numOfUpdatedRecords;
     }
     @Override
-    public int delete(int ID) throws SQLException {
+    public int delete(int TID) throws SQLException {
         PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(deleteTaskQuery);
-        preparedStatement.setInt(1, ID);
+        preparedStatement.setInt(1, TID);
         int numOfDeletedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
 
