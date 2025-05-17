@@ -147,7 +147,7 @@ public class TaskDAOImp implements TaskDAO {
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
-        if (resultSet == null) {
+        if (taskDTO == null) {
             throw new SQLException("No Tasks found");
         }
         return taskDTO;
@@ -167,7 +167,7 @@ public class TaskDAOImp implements TaskDAO {
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
-        if (resultSet == null) {
+        if (taskDTO == null) {
             throw new SQLException("No Tasks found");
         }
         return taskDTO;
