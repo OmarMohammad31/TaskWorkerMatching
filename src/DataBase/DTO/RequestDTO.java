@@ -3,7 +3,6 @@ import java.time.LocalDateTime;
 public class RequestDTO
 {
     private int RID;
-    private int WID;
     private int CID;
     private int TID;
     private String ADDRESS;
@@ -16,11 +15,19 @@ public class RequestDTO
     private String CLIENTFEEDBACK;
     private String WORKERFEEDBACK;
 
+    public RequestDTO(int RID, int CID, int TID, String ADDRESS, LocalDateTime PLACEMENTTIME, LocalDateTime PREFERREDTIMETOCARRYOUT, RequestStatus STATUS) {
+        this.RID = RID;
+        this.CID = CID;
+        this.TID = TID;
+        this.ADDRESS = ADDRESS;
+        this.PLACEMENTTIME = PLACEMENTTIME;
+        this.PREFERREDTIMETOCARRYOUT = PREFERREDTIMETOCARRYOUT;
+        this.STATUS = STATUS;
+    }
+
     public int getRID() {return RID;}
     public void setRID(int RID) {this.RID = RID;}
 
-    public int getWID() {return WID;}
-    public void setWID(int WID) {this.WID = WID;}
 
     public int getCID() {return CID;}
     public void setCID(int CID) {this.CID = CID;}
