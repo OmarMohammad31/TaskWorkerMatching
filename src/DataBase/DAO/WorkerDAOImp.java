@@ -50,7 +50,7 @@ public class WorkerDAOImp implements WorkerDAO
             "    W.ADDRESS,\n" +
             "    W.EMAIL,\n" +
             "    COALESCE(SUM(T.FEE), 0) AS TotalDueWage,\n" +
-            "    COALESCE(AVG(ER.CLIENTRATING), 0) AS AverageRating\n" +
+            "    COALESCE(AVG(ER.WORKERRATING), 0) AS AverageRating\n" +
             "FROM WORKER W\n" +
             "LEFT JOIN EXECUTEDREQUEST ER ON W.WID = ER.RID\n" +
             "LEFT JOIN REQUEST R ON ER.RID = R.RID \n" +
