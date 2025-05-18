@@ -21,7 +21,25 @@ public class WorkerDAOImp implements WorkerDAO
     private static final String insertWorkerQuery = "INSERT INTO WORKER(WID, NAME) VALUES(?, ?)";
     private static final String changeWorkerNameQuery = "UPDATE WORKER SET NAME = ? WHERE WID = ?";
     private static final String deleteWorkerQuery = "DELETE FROM WORKER WHERE WID = ?";
-    private static final String BestWorkerRatingQuery = "SELECT w1.WID, w1.NAME, w1.PHONE, w1.ADDRESS, w1.EMAIL, ws1.SPECID, AVG(er1.WORKERRATING) AS AvgRating FROM WORKER w1, EXECUTEDREQUEST er1, WORKERSPECIALITIES ws1, REQUEST r1 WHERE ws1.WID = w1.WID AND w1.WID = er1.WID AND er1.RID = r1.RID AND r1.PREFERREDTIMETOCARRYOUT BETWEEN ? AND ? GROUP BY ws1.SPECID, w1.WID, w1.NAME, w1.PHONE, w1.ADDRESS, w1.EMAIL HAVING AVG(er1.WORKERRATING) = (SELECT MAX(AVG(er2.WORKERRATING)) FROM WORKER w2, EXECUTEDREQUEST er2, WORKERSPECIALITIES ws2, REQUEST r2 WHERE ws2.WID = w2.WID AND w2.WID = er2.WID AND er2.RID = r2.RID AND r2.PREFERREDTIMETOCARRYOUT BETWEEN ? AND ? AND ws2.SPECID = ws1.SPECID GROUP BY ws2.SPECID, w2.WID) ORDER BY ws1.SPECID;";
+    private static final String BestWorkerRatingQuery = "SELECT \n" +
+            "    ws.SPECID,\n" +
+            "    w.WID,\n" +
+            "    w.NAME,\n" +
+            "    w.PHONE,\n" +
+            "    w.ADDRESS,\n" +
+            "    w.EMAIL,\n" +
+            "    AVG(er.WORKERRATING) AS AvgRating,\n" +
+            "    COUNT(er.RID) AS NumRequests\n" +
+            "FROM WORKER w, \n" +
+            "     EXECUTEDREQUEST er, \n" +
+            "     WORKERSPECIALITIES ws, \n" +
+            "     REQUEST r\n" +
+            "WHERE ws.WID = w.WID\n" +
+            "AND w.WID = er.WID\n" +
+            "AND r.RID = er.RID\n" +
+            "AND r.PREFERREDTIMETOCARRYOUT BETWEEN ? AND ?\n" +
+            "GROUP BY ws.SPECID, w.WID, w.NAME, w.PHONE, w.ADDRESS, w.EMAIL\n" +
+            "ORDER BY ws.SPECID, AvgRating DESC";
 
     @Override
     public ArrayList<WorkerDTO> getAll() throws SQLException {

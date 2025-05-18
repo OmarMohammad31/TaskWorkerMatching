@@ -19,7 +19,7 @@ public class TaskDAOImp implements TaskDAO {
     private static final String deleteTaskQuery = "DELETE FROM TASK WHERE TID = ?";
     private static final String getMostRequestedTaskQuery = " Select TOP 1 t.TID, t.name, count(*) as request_count From Task t, Request R Where t.TID = r.TID group by t.TID, t.NAME Order by request_count desc";
     private static final String getLeastRequestedTaskQuery = "Select TOP 1 t.TID, t.name, count(*) as request_count From Task t, Request R Where t.TID = r.TID group by t.TID, t.NAME Order by request_count asc;";
-    private static final String getSpecialityWithNoRequestsThisMonthQuery =  "SELECT s.SPECIALITYID, s.NAME FROM SPECIALITY s WHERE NOT EXISTS (SELECT 1 FROM TASK t JOIN REQUEST r ON t.TID = r.TID WHERE t.SID = s.SPECIALITYID AND r.PLACEMENTTIME >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0) AND r.PLACEMENTTIME < DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) + 1, 0));";
+    private static final String getSpecialityWithNoRequestsThisMonthQuery =  "SELECT s.SPECIALTYID, s.NAME FROM SPECIALITY s WHERE NOT EXISTS (SELECT 1 FROM TASK t JOIN REQUEST r ON t.TID = r.TID WHERE t.SID = s.SPECIALTYID AND r.PLACEMENTTIME >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0) AND r.PLACEMENTTIME < DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) + 1, 0));";
     public static TaskDAOImp getInstance() {return instance;}
     @Override
     public ArrayList<TaskDTO> getAll() throws SQLException {

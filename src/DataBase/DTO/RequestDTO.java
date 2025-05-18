@@ -9,12 +9,6 @@ public class RequestDTO
     private LocalDateTime PLACEMENTTIME;
     private LocalDateTime PREFERREDTIMETOCARRYOUT;
     private RequestStatus STATUS;
-    private int ACTUALTIMETAKEN;
-    private int WORKERRATING;
-    private int CLIENTRATING;
-    private String CLIENTFEEDBACK;
-    private String WORKERFEEDBACK;
-
     public RequestDTO(int RID, int CID, int TID, String ADDRESS, LocalDateTime PLACEMENTTIME, LocalDateTime PREFERREDTIMETOCARRYOUT, RequestStatus STATUS) {
         this.RID = RID;
         this.CID = CID;
@@ -27,7 +21,6 @@ public class RequestDTO
 
     public int getRID() {return RID;}
     public void setRID(int RID) {this.RID = RID;}
-
 
     public int getCID() {return CID;}
     public void setCID(int CID) {this.CID = CID;}
@@ -46,19 +39,4 @@ public class RequestDTO
 
     public RequestStatus getSTATUS() {return STATUS;}
     public void setSTATUS(RequestStatus STATUS) {this.STATUS = STATUS;}
-
-    public int getACTUALTIMETAKEN() {return ACTUALTIMETAKEN;}
-    public void setACTUALTIMETAKEN(int ACTUALTIMETAKEN) {this.ACTUALTIMETAKEN = ACTUALTIMETAKEN;}
-
-    public int getWORKERRATING() {return WORKERRATING;}
-    public void setWORKERRATING(int WORKERRATING) {this.WORKERRATING = WORKERRATING;}
-
-    public int getCLIENTRATING() {return CLIENTRATING;}
-    public void setCLIENTRATING(int CLIENTRATING) {this.CLIENTRATING = CLIENTRATING;}
-
-    public String getCLIENTFEEDBACK() {return CLIENTFEEDBACK;}
-    public void setCLIENTFEEDBACK(String CLIENTFEEDBACK) {this.CLIENTFEEDBACK = CLIENTFEEDBACK;}
-
-    public String getWORKERFEEDBACK() {return WORKERFEEDBACK;}
-    public void setWORKERFEEDBACK(String WORKERFEEDBACK) {this.WORKERFEEDBACK = WORKERFEEDBACK;}
 }

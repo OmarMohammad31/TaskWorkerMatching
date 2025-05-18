@@ -17,13 +17,13 @@ public class SpecialityDAOImp implements SpecialityDAO
     public static final SpecialityDAOImp getInstance(){return instance;}
     private static final String col_specialityID = "SPECID";
     private static final String col_name = "NAME";
-    private static final String SearchSpecialityQuery = "SELECT * FROM SPECIALITY WHERE SPECID = ?";
+    private static final String SearchSpecialityQuery = "SELECT * FROM SPECIALITY WHERE SPECIALTYID = ?";
     private static final String SelectAllSpecialityQuery = "SELECT * FROM SPECIALITY";
-    private static final String InsertSpecialityQuery = "INSERT INTO SPECIALITY(SPECID, NAME) VALUES (?,?)";
-    private static final String UpdateSpecialityQuery = "UPDATE SPECIALITY SET SPECID = ?, NAME = ? WHERE SPECID = ?";
-    private static final String DeleteSpecialityQuery = "DELETE FROM SPECIALITY WHERE SPECID = ?";
-    private static final String getMostRequestedSpecialityQuery = "SELECT TOP 1 s.SPECID, s.NAME, COUNT(*) AS SpecialityCount FROM SPECIALITY s, REQUEST r, TASK t WHERE s.SPECID = t.SPECID AND t.TID = r.TID GROUP BY s.SPECID, s.NAME ORDER BY SpecialityCount DESC";
-    private static final String getLeastRequestedSpecialityQuery = "SELECT TOP 1 s.SPECID, s.NAME, COUNT(*) AS SpecialityCount FROM SPECIALITY s, REQUEST r, TASK t WHERE s.SPECID = t.SPECID AND t.TID = r.TID GROUP BY s.SPECID, s.NAME ORDER BY SpecialityCount ASC;";
+    private static final String InsertSpecialityQuery = "INSERT INTO SPECIALITY(SPECIALTYID, NAME) VALUES (?,?)";
+    private static final String UpdateSpecialityQuery = "UPDATE SPECIALITY SET SPECIALTYID = ?, NAME = ? WHERE SPECIALTYID = ?";
+    private static final String DeleteSpecialityQuery = "DELETE FROM SPECIALITY WHERE SPECIALTYID = ?";
+    private static final String getMostRequestedSpecialityQuery = "SELECT TOP 1 s.SPECIALTYID, s.NAME, COUNT(*) AS SpecialityCount FROM SPECIALITY s, REQUEST r, TASK t WHERE s.SPECIALTYID = t.SID AND t.TID = r.TID GROUP BY s.SPECIALTYID, s.NAME ORDER BY SpecialityCount DESC";
+    private static final String getLeastRequestedSpecialityQuery = "SELECT TOP 1 s.SPECIALTYID, s.NAME, COUNT(*) AS SpecialityCount FROM SPECIALITY s, REQUEST r, TASK t WHERE s.SPECIALTYID = t.SID AND t.TID = r.TID GROUP BY s.SPECIALTYID, s.NAME ORDER BY SpecialityCount ASC;";
 
     @Override
     public ArrayList<SpecialityDTO> getAll() throws SQLException{
