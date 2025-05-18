@@ -21,25 +21,27 @@ public class WorkerDAOImp implements WorkerDAO
     private static final String insertWorkerQuery = "INSERT INTO WORKER(WID, NAME) VALUES(?, ?)";
     private static final String changeWorkerNameQuery = "UPDATE WORKER SET NAME = ? WHERE WID = ?";
     private static final String deleteWorkerQuery = "DELETE FROM WORKER WHERE WID = ?";
-    private static final String BestWorkerRatingQuery = "SELECT \n" +
-            "    ws.SPECID,\n" +
-            "    w.WID,\n" +
-            "    w.NAME,\n" +
-            "    w.PHONE,\n" +
-            "    w.ADDRESS,\n" +
-            "    w.EMAIL,\n" +
-            "    AVG(er.WORKERRATING) AS AvgRating,\n" +
-            "    COUNT(er.RID) AS NumRequests\n" +
-            "FROM WORKER w, \n" +
-            "     EXECUTEDREQUEST er, \n" +
-            "     WORKERSPECIALITIES ws, \n" +
-            "     REQUEST r\n" +
-            "WHERE ws.WID = w.WID\n" +
-            "AND w.WID = er.WID\n" +
-            "AND r.RID = er.RID\n" +
-            "AND r.PREFERREDTIMETOCARRYOUT BETWEEN ? AND ?\n" +
-            "GROUP BY ws.SPECID, w.WID, w.NAME, w.PHONE, w.ADDRESS, w.EMAIL\n" +
-            "ORDER BY ws.SPECID, AvgRating DESC";
+    private static final String BestWorkerRatingQuery = "WITH AvgRatings AS (SELECT w.WID, w.NAME, w.PHONE, w.ADDRESS, w.EMAIL, ws.SPECID, AVG(er.WORKERRATING) AS AvgRating\n" +
+            "    FROM WORKER w\n" +
+            "    JOIN EXECUTEDREQUEST er ON w.WID = er.WID\n" +
+            "    JOIN WORKERSPECIALITIES ws ON ws.WID = w.WID\n" +
+            "    JOIN REQUEST r ON er.RID = r.RID\n" +
+            "    WHERE r.PREFERREDTIMETOCARRYOUT BETWEEN ? AND ?\n" +
+            "    GROUP BY ws.SPECID, w.WID, w.NAME, w.PHONE, w.ADDRESS, w.EMAIL\n" +
+            "),\n" +
+            "MaxRatings AS (\n" +
+            "    SELECT \n" +
+            "        SPECID, \n" +
+            "        MAX(AvgRating) AS MaxAvgRating\n" +
+            "    FROM AvgRatings\n" +
+            "    GROUP BY SPECID\n" +
+            ")\n" +
+            "SELECT ar.*\n" +
+            "FROM AvgRatings ar\n" +
+            "JOIN MaxRatings mr \n" +
+            "    ON ar.SPECID = mr.SPECID \n" +
+            "    AND ar.AvgRating = mr.MaxAvgRating\n" +
+            "ORDER BY ar.SPECID;";
 
     @Override
     public ArrayList<WorkerDTO> getAll() throws SQLException {
@@ -104,19 +106,14 @@ public class WorkerDAOImp implements WorkerDAO
         PreparedStatement preparedStatement = connection.prepareStatement(BestWorkerRatingQuery);
         preparedStatement.setObject(1, startTime);
         preparedStatement.setObject(2, endTime);
-        preparedStatement.setObject(3, startTime);
-        preparedStatement.setObject(4, endTime);
         ResultSet resultSet = preparedStatement.executeQuery();
-        WorkerDTO worker = null;
         while (resultSet.next()) {
             int workerId = resultSet.getInt(col_wid);
             String name = resultSet.getString(col_name);
             String phone = resultSet.getString(col_phone);
             String address = resultSet.getString(col_address);
             String email = resultSet.getString(col_email);
-
-            worker = new WorkerDTO(workerId, name, phone, address, email);
-            workers.add(worker);
+            workers.add(new WorkerDTO(workerId, name, phone, address, email));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
