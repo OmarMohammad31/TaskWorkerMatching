@@ -1,18 +1,13 @@
 package DataBase.DAO;
-
 import DataBase.DTO.RequestDTO;
 import DataBase.DTO.RequestStatus;
-import DataBase.DTO.SpecialityDTO;
 import DataBase.DataBaseConnector;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Stack;
-
 public class RequestDAOImp implements RequestDAO
 {
     private static final RequestDAOImp instance = new RequestDAOImp();
@@ -44,8 +39,7 @@ public class RequestDAOImp implements RequestDAO
             LocalDateTime PlacementTime = resultset.getObject(col_PlacementTime, LocalDateTime.class);
             LocalDateTime PreferredTimeToCarryOut = resultset.getObject(col_PreferredTimeToCarryOut, LocalDateTime.class);
             RequestStatus Status = RequestStatus.valueOf(resultset.getString(col_Status));
-            RequestDTO request = new RequestDTO(RID, CID, TID, Address, PlacementTime, PreferredTimeToCarryOut, Status);
-            allRequests.add(request);
+            allRequests.add(new RequestDTO(RID, CID, TID, Address, PlacementTime, PreferredTimeToCarryOut, Status));
         }
         //close connection
         DataBaseConnector.closeResultSet(resultset);
@@ -68,9 +62,7 @@ public class RequestDAOImp implements RequestDAO
             LocalDateTime PlacementTime = resultSet.getObject(col_PlacementTime, LocalDateTime.class);
             LocalDateTime PreferredTimeToCarryOut = resultSet.getObject(col_PreferredTimeToCarryOut, LocalDateTime.class);
             RequestStatus Status = RequestStatus.valueOf(resultSet.getString(col_Status));
-
             request = new RequestDTO(RID, CID, TID, Address, PlacementTime, PreferredTimeToCarryOut, Status);
-
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
@@ -110,11 +102,10 @@ public class RequestDAOImp implements RequestDAO
         preparedStatement.setString(6, request.getSTATUS().name());
         preparedStatement.setInt(7, request.getRID());
         preparedStatement.setInt(8, request.getCID());
-
-        int result = preparedStatement.executeUpdate();
+        int numOfUpdatedRows = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
         DataBaseConnector.closeConnection(connection);
-        return result;
+        return numOfUpdatedRows;
     }
 
     @Override
@@ -122,9 +113,9 @@ public class RequestDAOImp implements RequestDAO
         Connection connection = DataBaseConnector.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(DeleteRequestQuery);
         preparedStatement.setInt(1, RID);
-        int result = preparedStatement.executeUpdate();
+        int numOfDeletedRows = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
         DataBaseConnector.closeConnection(connection);
-        return result;
+        return numOfDeletedRows;
     }
 }
