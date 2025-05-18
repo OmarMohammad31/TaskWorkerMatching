@@ -1,6 +1,9 @@
 package DataBase.DAO;
 import DataBase.DTO.WorkerDTO;
+import DataBase.DTO.WorkerWithAvgRatingAndTotalWageDTO;
 import DataBase.DataBaseConnector;
+
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +43,21 @@ public class WorkerDAOImp implements WorkerDAO
             "    ON ar.SPECID = mr.SPECID \n" +
             "    AND ar.AvgRating = mr.MaxAvgRating\n" +
             "ORDER BY ar.SPECID;";
+    private static final String getTotalWageForEachWorkerWithRatingQuery = "SELECT \n" +
+            "    W.WID,\n" +
+            "    W.NAME,\n" +
+            "    W.PHONE,\n" +
+            "    W.ADDRESS,\n" +
+            "    W.EMAIL,\n" +
+            "    COALESCE(SUM(T.FEE), 0) AS TotalDueWage,\n" +
+            "    COALESCE(AVG(ER.CLIENTRATING), 0) AS AverageRating\n" +
+            "FROM WORKER W\n" +
+            "LEFT JOIN EXECUTEDREQUEST ER ON W.WID = ER.RID\n" +
+            "LEFT JOIN REQUEST R ON ER.RID = R.RID \n" +
+            "    AND R.PREFERREDTIMETOCARRYOUT BETWEEN ? AND ?\n" +
+            "LEFT JOIN TASK T ON R.TID = T.TID\n" +
+            "GROUP BY W.WID, W.NAME, W.PHONE, W.ADDRESS, W.EMAIL\n" +
+            "ORDER BY TotalDueWage DESC;";
 
     @Override
     public ArrayList<WorkerDTO> getAll() throws SQLException {
@@ -112,6 +130,29 @@ public class WorkerDAOImp implements WorkerDAO
             String address = resultSet.getString(col_address);
             String email = resultSet.getString(col_email);
             workers.add(new WorkerDTO(workerId, name, phone, address, email));
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
+        return workers;
+    }
+    @Override
+    public ArrayList<WorkerWithAvgRatingAndTotalWageDTO> getTotalWageForEachWorkerWithRating(LocalDateTime startTime, LocalDateTime endTime) throws SQLException{
+        ArrayList<WorkerWithAvgRatingAndTotalWageDTO> workers = new ArrayList<>();
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getTotalWageForEachWorkerWithRatingQuery);
+        preparedStatement.setObject(1,startTime);
+        preparedStatement.setObject(2,endTime);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            int wid = resultSet.getInt(col_wid);
+            String name = resultSet.getString(col_name);
+            String phone = resultSet.getString(col_phone);
+            String Address = resultSet.getString(col_address);
+            String Email = resultSet.getString(col_email);
+            int totalWage = resultSet.getInt("TotalDueWage");
+            double avgRating = resultSet.getDouble("TotalDueWage");
+            workers.add(new WorkerWithAvgRatingAndTotalWageDTO(totalWage, avgRating, new WorkerDTO(wid, name, phone,Address, Email)));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
