@@ -1,6 +1,7 @@
 package DataBase.DAO;
 import DataBase.DTO.ClientDTO;
 import DataBase.DataBaseConnector;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +27,8 @@ public class ClientDAOImp implements ClientDAO
     @Override
     public ArrayList<ClientDTO> getAll() throws SQLException {
         ArrayList<ClientDTO> allClients = new ArrayList<>();
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getAllClientsQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getAllClientsQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()){
             int CID = resultSet.getInt(col_cid);
@@ -41,11 +43,13 @@ public class ClientDAOImp implements ClientDAO
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return allClients;
     }
     @Override
     public int insert(ClientDTO clientDTO) throws SQLException{
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(insertClientQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(insertClientQuery);
         preparedStatement.setInt(1,clientDTO.getCID());
         preparedStatement.setString(2, clientDTO.getNAME());
         preparedStatement.setString(3,clientDTO.getPHONE());
@@ -56,11 +60,13 @@ public class ClientDAOImp implements ClientDAO
         preparedStatement.setString(8,clientDTO.getCVV());
         int numOfInsertedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return numOfInsertedRecords;
     }
     @Override
     public ClientDTO search(int cid) throws SQLException{
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getClientQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getClientQuery);
         preparedStatement.setInt(1,cid);
         ResultSet resultSet = preparedStatement.executeQuery();
         ClientDTO clientDTO = null;
@@ -76,11 +82,13 @@ public class ClientDAOImp implements ClientDAO
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return clientDTO;
     }
     @Override
     public int update(ClientDTO clientDTO) throws SQLException{
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateClientQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(updateClientQuery);
         preparedStatement.setString(1,clientDTO.getNAME());
         preparedStatement.setString(2,clientDTO.getPHONE());
         preparedStatement.setString(3,clientDTO.getADDRESS());
@@ -91,14 +99,17 @@ public class ClientDAOImp implements ClientDAO
         preparedStatement.setInt(8,clientDTO.getCID());
         int numOfUpdatedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return numOfUpdatedRecords;
     }
     @Override
     public int delete(int CID) throws SQLException{
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(deleteClientQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(deleteClientQuery);
         preparedStatement.setInt(1,CID);
         int numOfDeletedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return numOfDeletedRecords;
     }
 }
