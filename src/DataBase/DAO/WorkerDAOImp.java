@@ -89,6 +89,23 @@ public class WorkerDAOImp implements WorkerDAO
             "SELECT TOP 1 *\n" +
             "FROM RequestCounts\n" +
             "ORDER BY TotalRequests ASC;";
+    private static final String getMatchingWorkersForRequestQuery = "SELECT \n" +
+            "    W.WID,\n" +
+            "    W.NAME,\n" +
+            "    W.ADDRESS,\n" +
+            "    WS.SPECID,\n" +
+            "    ATS.STARTOFSLOT,\n" +
+            "    ATS.ENDOFSLOT\n" +
+            "FROM WORKER W\n" +
+            "INNER JOIN WORKERSPECIALITIES WS ON W.WID = WS.WID\n" +
+            "INNER JOIN AVAILABLETIMESLOTS ATS ON W.WID = ATS.WID\n" +
+            "INNER JOIN REQUEST R ON R.ADDRESS = W.ADDRESS\n" +
+            "INNER JOIN TASK T ON R.TID = T.TID\n" +
+            "WHERE \n" +
+            "    R.RID = ?\n" +
+            "    AND WS.SPECID = T.SID  \n" +
+            "    AND R.PREFERREDTIMETOCARRYOUT BETWEEN ATS.STARTOFSLOT AND ATS.ENDOFSLOT  \n" +
+            "    AND R.ADDRESS = W.ADDRESS; ";
     @Override
     public ArrayList<WorkerDTO> getAll() throws SQLException {
         ArrayList<WorkerDTO> allWorkers = new ArrayList<>();
@@ -248,5 +265,25 @@ public class WorkerDAOImp implements WorkerDAO
         DataBaseConnector.closePreparedStatement(preparedStatement);
         DataBaseConnector.closeConnection(connection);
         return null;
+    }
+    @Override
+    public ArrayList<WorkerDTO> getMatchingWorkersForRequest(int rid) throws SQLException{
+        ArrayList<WorkerDTO> workers = new ArrayList<>();
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getMatchingWorkersForRequestQuery);
+        preparedStatement.setInt(1,rid);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            int wid = resultSet.getInt(col_wid);
+            String name = resultSet.getString(col_name);
+            String phone = resultSet.getString(col_phone);
+            String address = resultSet.getString(col_address);
+            String email = resultSet.getString(col_email);
+            workers.add(new WorkerDTO(wid, name, phone, address, email));
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
+        return workers;
     }
 }

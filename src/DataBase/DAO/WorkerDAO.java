@@ -13,4 +13,5 @@ public interface WorkerDAO extends GenericDAO<WorkerDTO>
     public ArrayList<WorkerWithAvgRatingDTO> getWorkersWithMoreThan4AndHalfRating() throws SQLException;
     public WorkerDTO getMostRequestedWorker() throws SQLException;
     public WorkerDTO getleasttRequestedWorker() throws SQLException;
+    public ArrayList<WorkerDTO> getMatchingWorkersForRequest(int rid) throws SQLException;
 }
