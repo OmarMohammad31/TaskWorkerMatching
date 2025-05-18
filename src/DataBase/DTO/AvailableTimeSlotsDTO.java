@@ -7,6 +7,13 @@ public class AvailableTimeSlotsDTO
     private LocalDateTime STARTOFSLOT;
     private LocalDateTime ENDOFSLOT;
 
+    public AvailableTimeSlotsDTO(int WID, LocalDateTime STARTOFSLOT, int SLOTID, LocalDateTime ENDOFSLOT)
+    {
+        this.WID = WID;
+        this.STARTOFSLOT = STARTOFSLOT;
+        this.SLOTID = SLOTID;
+        this.ENDOFSLOT = ENDOFSLOT;
+    }
     public int getWID() {return WID;}
     public void setWID(int WID) {this.WID = WID;}
 

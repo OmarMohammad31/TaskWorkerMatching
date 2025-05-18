@@ -1,27 +1,24 @@
 package DataBase.DTO;
 public class WorkerSpecialitiesDTO
 {
-    private int SPECIALTYID;
+    private int WID;
+    private int SPECID;
 
-    public int getWID()
-    {
-        return WID;
+    public WorkerSpecialitiesDTO(int WID, int SPECID) {
+        this.WID = WID;
+        this.SPECID = SPECID;
     }
-
+    public int getWID() {return WID;}
     public void setWID(int WID)
     {
         this.WID = WID;
     }
-
-    public int getSPECIALTYID()
+    public int getSPECID()
     {
-        return SPECIALTYID;
+        return SPECID;
     }
-
-    public void setSPECIALTYID(int SPECIALTYID)
+    public void setSPECID(int SPECID)
     {
-        this.SPECIALTYID = SPECIALTYID;
+        this.SPECID = SPECID;
     }
-
-    private int WID;
 }

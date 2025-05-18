@@ -1,6 +1,9 @@
 package DataBase.DTO;
 public class SpecialityDTO
 {
+    private int SPECIALTYID;
+    private String NAME;
+
     public SpecialityDTO(int SPECIALTYID, String NAME) {
         this.SPECIALTYID = SPECIALTYID;
         this.NAME = NAME;
@@ -18,7 +21,6 @@ public class SpecialityDTO
     {
         return SPECIALTYID;
     }
-
     public void setSPECIALTYID(int SPECIALTYID)
     {
         this.SPECIALTYID = SPECIALTYID;
@@ -28,12 +30,8 @@ public class SpecialityDTO
     {
         return NAME;
     }
-
     public void setNAME(String NAME)
     {
         this.NAME = NAME;
     }
-
-    private int SPECIALTYID;
-    private String NAME;
 }
