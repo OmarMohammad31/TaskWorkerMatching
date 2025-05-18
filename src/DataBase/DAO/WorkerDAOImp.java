@@ -1,12 +1,10 @@
 package DataBase.DAO;
 import DataBase.DTO.WorkerDTO;
 import DataBase.DataBaseConnector;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 public class WorkerDAOImp implements WorkerDAO
 {
     private WorkerDAOImp instance = new WorkerDAOImp();

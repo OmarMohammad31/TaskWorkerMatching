@@ -1,5 +1,4 @@
 package DataBase.DAO;
-import DataBase.DTO.ClientDTO;
 import DataBase.DTO.TaskDTO;
 import java.sql.SQLException;
 import java.util.ArrayList;

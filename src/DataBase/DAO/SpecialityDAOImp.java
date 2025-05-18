@@ -1,16 +1,11 @@
 package DataBase.DAO;
-
 import DataBase.DTO.SpecialityDTO;
-import DataBase.DTO.TaskDTO;
 import DataBase.DataBaseConnector;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-
 public class SpecialityDAOImp implements SpecialityDAO
 {
     private static final SpecialityDAOImp instance = new SpecialityDAOImp();
