@@ -1,5 +1,6 @@
 package DataBase.DAO;
 import DataBase.DTO.WorkerDTO;
+import DataBase.DTO.WorkerWithAvgRating;
 import DataBase.DTO.WorkerWithAvgRatingAndTotalWageDTO;
 import DataBase.DataBaseConnector;
 
@@ -58,7 +59,15 @@ public class WorkerDAOImp implements WorkerDAO
             "LEFT JOIN TASK T ON R.TID = T.TID\n" +
             "GROUP BY W.WID, W.NAME, W.PHONE, W.ADDRESS, W.EMAIL\n" +
             "ORDER BY TotalDueWage DESC;";
-
+    private static final String getWorkersWithMoreThan4AndHalfRatingQuery = "SELECT \n" +
+            "    W.WID AS WorkerID,\n" +
+            "    W.NAME AS WorkerName,\n" +
+            "    MIN(ER.WORKERRATING) AS MinimumRating\n" +
+            "FROM WORKER W\n" +
+            "INNER JOIN EXECUTEDREQUEST ER ON W.WID = ER.WID  -- Changed to INNER JOIN\n" +
+            "GROUP BY W.WID, W.NAME\n" +
+            "HAVING MIN(ER.WORKERRATING) >= 4.5  -- No COALESCE needed\n" +
+            "ORDER BY W.WID;";
     @Override
     public ArrayList<WorkerDTO> getAll() throws SQLException {
         ArrayList<WorkerDTO> allWorkers = new ArrayList<>();
@@ -153,6 +162,26 @@ public class WorkerDAOImp implements WorkerDAO
             int totalWage = resultSet.getInt("TotalDueWage");
             double avgRating = resultSet.getDouble("TotalDueWage");
             workers.add(new WorkerWithAvgRatingAndTotalWageDTO(totalWage, avgRating, new WorkerDTO(wid, name, phone,Address, Email)));
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
+        return workers;
+    }
+    @Override
+    public ArrayList<WorkerWithAvgRating> getWorkersWithMoreThan4AndHalfRating() throws SQLException{
+        ArrayList<WorkerWithAvgRating> workers = new ArrayList<>();
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getWorkersWithMoreThan4AndHalfRatingQuery);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            int wid = resultSet.getInt(col_wid);
+            String name = resultSet.getString(col_name);
+            String phone = resultSet.getString(col_phone);
+            String address = resultSet.getString(col_address);
+            String Email = resultSet.getString(col_email);
+            double rating = resultSet.getDouble("MinimumRating");
+            workers.add(new WorkerWithAvgRating(rating, new WorkerDTO(wid, name, phone, address, Email)));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);

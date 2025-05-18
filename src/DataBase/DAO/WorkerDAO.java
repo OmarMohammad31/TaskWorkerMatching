@@ -1,5 +1,6 @@
 package DataBase.DAO;
 import DataBase.DTO.WorkerDTO;
+import DataBase.DTO.WorkerWithAvgRating;
 import DataBase.DTO.WorkerWithAvgRatingAndTotalWageDTO;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -9,4 +10,5 @@ public interface WorkerDAO extends GenericDAO<WorkerDTO>
 {
     public List<WorkerDTO> getHighestRatedWorkersPerSpecialty(LocalDateTime startTime, LocalDateTime endTime) throws SQLException;
     public ArrayList<WorkerWithAvgRatingAndTotalWageDTO> getTotalWageForEachWorkerWithRating(LocalDateTime startTime, LocalDateTime endTime) throws SQLException;
+    public ArrayList<WorkerWithAvgRating> getWorkersWithMoreThan4AndHalfRating() throws SQLException;
 }
