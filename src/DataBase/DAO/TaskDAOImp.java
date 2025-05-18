@@ -1,6 +1,7 @@
 package DataBase.DAO;
 import DataBase.DTO.TaskDTO;
 import DataBase.DataBaseConnector;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +25,8 @@ public class TaskDAOImp implements TaskDAO {
     @Override
     public ArrayList<TaskDTO> getAll() throws SQLException {
         ArrayList<TaskDTO> allTasks = new ArrayList<>();
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getAllTasksQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getAllTasksQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             int tid = resultSet.getInt(col_tid);
@@ -36,11 +38,13 @@ public class TaskDAOImp implements TaskDAO {
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return allTasks;
     }
     @Override
     public TaskDTO search(int TID) throws SQLException {
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getTaskQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getTaskQuery);
         preparedStatement.setInt(1, TID);
         ResultSet resultSet = preparedStatement.executeQuery();
         TaskDTO taskDTO = null;
@@ -54,11 +58,13 @@ public class TaskDAOImp implements TaskDAO {
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return taskDTO;
     }
     @Override
     public int insert(TaskDTO taskDTO) throws SQLException {
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(insertTaskQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(insertTaskQuery);
         preparedStatement.setInt(1, taskDTO.getTID());
         preparedStatement.setString(2, taskDTO.getName());
         preparedStatement.setString(3, taskDTO.getSPECIALITY());
@@ -66,11 +72,13 @@ public class TaskDAOImp implements TaskDAO {
         preparedStatement.setInt(5, taskDTO.getFEE());
         int numOfInsertedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return numOfInsertedRecords;
     }
     @Override
     public int update(TaskDTO taskDTO) throws SQLException {
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(updateTaskQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(updateTaskQuery);
         preparedStatement.setString(1, taskDTO.getName());
         preparedStatement.setString(2, taskDTO.getSPECIALITY());
         preparedStatement.setInt(3, taskDTO.getAVGNEEDEDTIME());
@@ -78,18 +86,22 @@ public class TaskDAOImp implements TaskDAO {
         preparedStatement.setInt(5, taskDTO.getTID());
         int numOfUpdatedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return numOfUpdatedRecords;
     }
     @Override
     public int delete(int TID) throws SQLException {
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(deleteTaskQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(deleteTaskQuery);
         preparedStatement.setInt(1, TID);
         int numOfDeletedRecords = preparedStatement.executeUpdate();
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return numOfDeletedRecords;
     }
     public TaskDTO getMostRequestedTask() throws SQLException {
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getMostRequestedTaskQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getMostRequestedTaskQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
         TaskDTO taskDTO = null;
         if (resultSet.next()) {
@@ -102,10 +114,12 @@ public class TaskDAOImp implements TaskDAO {
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return taskDTO;
     }
     public TaskDTO getLeastRequestedTask() throws SQLException {
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getLeastRequestedTaskQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getLeastRequestedTaskQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
         TaskDTO taskDTO = null;
         if (resultSet.next()) {
@@ -118,10 +132,12 @@ public class TaskDAOImp implements TaskDAO {
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return taskDTO;
     }
     public ArrayList<TaskDTO> getTaskWithNoRequestThisMonth() throws SQLException {
-        PreparedStatement preparedStatement = DataBaseConnector.getConnection().prepareStatement(getSpecialityWithNoRequestsThisMonthQuery);
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getSpecialityWithNoRequestsThisMonthQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<TaskDTO> SpecialityWithNoTasksThisMonth = new ArrayList<>();
         while (resultSet.next()) {
@@ -134,6 +150,7 @@ public class TaskDAOImp implements TaskDAO {
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
         return SpecialityWithNoTasksThisMonth;
     }
 }
