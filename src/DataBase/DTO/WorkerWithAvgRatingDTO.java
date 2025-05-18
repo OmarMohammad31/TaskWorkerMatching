@@ -1,10 +1,10 @@
 package DataBase.DTO;
-public class WorkerWithAvgRating
+public class WorkerWithAvgRatingDTO
 {
     private double avgRating;
     private WorkerDTO workerDTO;
 
-    public WorkerWithAvgRating(double avgRating, WorkerDTO workerDTO) {
+    public WorkerWithAvgRatingDTO(double avgRating, WorkerDTO workerDTO) {
         this.avgRating = avgRating;
         this.workerDTO = workerDTO;
     }

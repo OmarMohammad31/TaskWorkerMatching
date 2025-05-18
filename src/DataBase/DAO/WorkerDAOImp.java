@@ -1,10 +1,9 @@
 package DataBase.DAO;
 import DataBase.DTO.WorkerDTO;
-import DataBase.DTO.WorkerWithAvgRating;
+import DataBase.DTO.WorkerWithAvgRatingDTO;
 import DataBase.DTO.WorkerWithAvgRatingAndTotalWageDTO;
 import DataBase.DataBaseConnector;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -68,6 +67,28 @@ public class WorkerDAOImp implements WorkerDAO
             "GROUP BY W.WID, W.NAME\n" +
             "HAVING MIN(ER.WORKERRATING) >= 4.5  -- No COALESCE needed\n" +
             "ORDER BY W.WID;";
+    private static final String getMostRequestedWorkerQuery = "WITH RequestCounts AS (\n" +
+            "    SELECT \n" +
+            "        W.*,\n" +
+            "        COUNT(ER.RID) AS TotalRequests\n" +
+            "    FROM WORKER W\n" +
+            "    INNER JOIN EXECUTEDREQUEST ER ON W.WID = ER.WID\n" +
+            "    GROUP BY W.WID, W.NAME, W.PHONE, W.ADDRESS, W.EMAIL\n" +
+            ")\n" +
+            "SELECT TOP 1 *\n" +
+            "FROM RequestCounts\n" +
+            "ORDER BY TotalRequests DESC;";
+    private static final String getLeastRequestedWorkerQuery = "WITH RequestCounts AS (\n" +
+            "    SELECT \n" +
+            "        W.*,\n" +
+            "        COUNT(ER.RID) AS TotalRequests\n" +
+            "    FROM WORKER W\n" +
+            "    INNER JOIN EXECUTEDREQUEST ER ON W.WID = ER.WID\n" +
+            "    GROUP BY W.WID, W.NAME, W.PHONE, W.ADDRESS, W.EMAIL\n" +
+            ")\n" +
+            "SELECT TOP 1 *\n" +
+            "FROM RequestCounts\n" +
+            "ORDER BY TotalRequests ASC;";
     @Override
     public ArrayList<WorkerDTO> getAll() throws SQLException {
         ArrayList<WorkerDTO> allWorkers = new ArrayList<>();
@@ -169,8 +190,8 @@ public class WorkerDAOImp implements WorkerDAO
         return workers;
     }
     @Override
-    public ArrayList<WorkerWithAvgRating> getWorkersWithMoreThan4AndHalfRating() throws SQLException{
-        ArrayList<WorkerWithAvgRating> workers = new ArrayList<>();
+    public ArrayList<WorkerWithAvgRatingDTO> getWorkersWithMoreThan4AndHalfRating() throws SQLException{
+        ArrayList<WorkerWithAvgRatingDTO> workers = new ArrayList<>();
         Connection connection = DataBaseConnector.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(getWorkersWithMoreThan4AndHalfRatingQuery);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -181,11 +202,51 @@ public class WorkerDAOImp implements WorkerDAO
             String address = resultSet.getString(col_address);
             String Email = resultSet.getString(col_email);
             double rating = resultSet.getDouble("MinimumRating");
-            workers.add(new WorkerWithAvgRating(rating, new WorkerDTO(wid, name, phone, address, Email)));
+            workers.add(new WorkerWithAvgRatingDTO(rating, new WorkerDTO(wid, name, phone, address, Email)));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
         DataBaseConnector.closeConnection(connection);
         return workers;
+    }
+    public WorkerDTO getMostRequestedWorker() throws SQLException{
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getMostRequestedWorkerQuery);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()){
+            int wid = resultSet.getInt(col_wid);
+            String name = resultSet.getString(col_name);
+            String phone = resultSet.getString(col_phone);
+            String address = resultSet.getString(col_address);
+            String email = resultSet.getString(col_email);
+            DataBaseConnector.closeResultSet(resultSet);
+            DataBaseConnector.closePreparedStatement(preparedStatement);
+            DataBaseConnector.closeConnection(connection);
+            return new WorkerDTO(wid, name, phone, address, email);
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
+        return null;
+    }
+    public WorkerDTO getleasttRequestedWorker() throws SQLException{
+        Connection connection = DataBaseConnector.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(getLeastRequestedWorkerQuery);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()){
+            int wid = resultSet.getInt(col_wid);
+            String name = resultSet.getString(col_name);
+            String phone = resultSet.getString(col_phone);
+            String address = resultSet.getString(col_address);
+            String email = resultSet.getString(col_email);
+            DataBaseConnector.closeResultSet(resultSet);
+            DataBaseConnector.closePreparedStatement(preparedStatement);
+            DataBaseConnector.closeConnection(connection);
+            return new WorkerDTO(wid, name, phone, address, email);
+        }
+        DataBaseConnector.closeResultSet(resultSet);
+        DataBaseConnector.closePreparedStatement(preparedStatement);
+        DataBaseConnector.closeConnection(connection);
+        return null;
     }
 }
