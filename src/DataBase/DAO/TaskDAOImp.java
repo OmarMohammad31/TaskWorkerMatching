@@ -10,7 +10,7 @@ public class TaskDAOImp implements TaskDAO {
     private static final TaskDAOImp instance = new TaskDAOImp();
     private static final String col_tid = "TID";
     private static final String col_name = "NAME";
-    private static final String col_speciality = "SPECIALITY";
+    private static final String col_specialityID = "SPECIALTYID";
     private static final String col_avgneededtime = "AVGNEEDEDTIME";
     private static final String col_fee = "FEE";
     private static final String getAllTasksQuery = "SELECT * FROM TASK";
@@ -31,10 +31,10 @@ public class TaskDAOImp implements TaskDAO {
         while (resultSet.next()) {
             int tid = resultSet.getInt(col_tid);
             String name = resultSet.getString(col_name);
-            String speciality = resultSet.getString(col_speciality);
+            int specialityID = resultSet.getInt(col_specialityID);
             int avgneededtime = resultSet.getInt(col_avgneededtime);
             int fee = resultSet.getInt(col_fee);
-            allTasks.add(new TaskDTO(tid, name, speciality, avgneededtime, fee));
+            allTasks.add(new TaskDTO(tid, name, specialityID, avgneededtime, fee));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
@@ -51,10 +51,10 @@ public class TaskDAOImp implements TaskDAO {
         if (resultSet.next()) {
             int tid = resultSet.getInt(col_tid);
             String name = resultSet.getString(col_name);
-            String speciality = resultSet.getString(col_speciality);
+            int specialityID = resultSet.getInt(col_specialityID);
             int avgneededtime = resultSet.getInt(col_avgneededtime);
             int fee = resultSet.getInt(col_fee);
-            taskDTO = new TaskDTO(tid, name, speciality, avgneededtime, fee);
+            taskDTO = new TaskDTO(tid, name, specialityID, avgneededtime, fee);
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
@@ -67,7 +67,7 @@ public class TaskDAOImp implements TaskDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(insertTaskQuery);
         preparedStatement.setInt(1, taskDTO.getTID());
         preparedStatement.setString(2, taskDTO.getName());
-        preparedStatement.setString(3, taskDTO.getSPECIALITY());
+        preparedStatement.setInt(3, taskDTO.getSPECIALITYID());
         preparedStatement.setInt(4, taskDTO.getAVGNEEDEDTIME());
         preparedStatement.setInt(5, taskDTO.getFEE());
         int numOfInsertedRecords = preparedStatement.executeUpdate();
@@ -80,7 +80,7 @@ public class TaskDAOImp implements TaskDAO {
         Connection connection = DataBaseConnector.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(updateTaskQuery);
         preparedStatement.setString(1, taskDTO.getName());
-        preparedStatement.setString(2, taskDTO.getSPECIALITY());
+        preparedStatement.setInt(2, taskDTO.getSPECIALITYID());
         preparedStatement.setInt(3, taskDTO.getAVGNEEDEDTIME());
         preparedStatement.setInt(4, taskDTO.getFEE());
         preparedStatement.setInt(5, taskDTO.getTID());
@@ -107,10 +107,10 @@ public class TaskDAOImp implements TaskDAO {
         if (resultSet.next()) {
             int tid = resultSet.getInt(col_tid);
             String name = resultSet.getString(col_name);
-            String speciality = resultSet.getString(col_speciality);
+            int specialityID = resultSet.getInt(col_specialityID);
             int avgneededtime = resultSet.getInt(col_avgneededtime);
             int fee = resultSet.getInt(col_fee);
-            taskDTO = new TaskDTO(tid, name, speciality, avgneededtime, fee);
+            taskDTO = new TaskDTO(tid, name, specialityID, avgneededtime, fee);
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
@@ -125,10 +125,10 @@ public class TaskDAOImp implements TaskDAO {
         if (resultSet.next()) {
             int tid = resultSet.getInt(col_tid);
             String name = resultSet.getString(col_name);
-            String speciality = resultSet.getString(col_speciality);
+            int specialityID = resultSet.getInt(col_specialityID);
             int avgneededtime = resultSet.getInt(col_avgneededtime);
             int fee = resultSet.getInt(col_fee);
-            taskDTO = new TaskDTO(tid, name, speciality, avgneededtime, fee);
+            taskDTO = new TaskDTO(tid, name, specialityID, avgneededtime, fee);
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
@@ -143,10 +143,10 @@ public class TaskDAOImp implements TaskDAO {
         while (resultSet.next()) {
             int TID = resultSet.getInt(col_tid);
             String Name = resultSet.getString(col_name);
-            String SPECIALITY = resultSet.getString(col_speciality);
+            int SPECIALITYID = resultSet.getInt(col_specialityID);
             int AVGNEEDEDTIME = resultSet.getInt(col_avgneededtime);
             int FEE = resultSet.getInt(col_fee);
-            SpecialityWithNoTasksThisMonth.add(new TaskDTO(TID, Name, SPECIALITY, AVGNEEDEDTIME, FEE));
+            SpecialityWithNoTasksThisMonth.add(new TaskDTO(TID, Name, SPECIALITYID, AVGNEEDEDTIME, FEE));
         }
         DataBaseConnector.closeResultSet(resultSet);
         DataBaseConnector.closePreparedStatement(preparedStatement);
